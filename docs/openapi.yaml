@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: BeautyBooking API
+  version: "1.0.0"
+  description: API for booking platform (salons, clinics, hammam)
+servers:
+  - url: http://localhost:5000/api
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+      responses:
+        '201':
+          description: created
+  /auth/login:
+    post:
+      tags: [Auth]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: ok
+  /providers:
+    get:
+      tags: [Providers]
+      responses:
+        '200':
+          description: list
+    post:
+      tags: [Providers]
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderDto'
+      responses:
+        '201':
+          description: created
+  /bookings:
+    post:
+      tags: [Bookings]
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDto'
+      responses:
+        '201':
+          description: created
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterDto:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+    LoginDto:
+      type: object
+      properties:
+        email: { type: string }
+        password: { type: string }
+    ProviderDto:
+      type: object
+      properties:
+        business_name: { type: string }
+        category: { type: string }
+        description: { type: string }
+    BookingDto:
+      type: object
+      properties:
+        provider_id: { type: integer }
+        service_id: { type: integer }
+        booking_date: { type: string, format: date }
+        booking_time: { type: string, format: time }
